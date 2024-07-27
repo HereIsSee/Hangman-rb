@@ -1,12 +1,16 @@
+require 'json'
 
 class Hangman
 
-  def initialize
-    @guess_counter = 20
-    @secret_word = select_secret_word( read_from_file("words.txt") )
-    @guessed_word = ("_" * @secret_word.length).split("").join(" ")
-    @already_guessed_letters = Array.new
-    @secret_word = @secret_word.split("").join(" ")
+  def initialize(
+    guess_counter = 20, secret_word = select_secret_word( read_from_file("words.txt") ),
+    guessed_word = ("_" * secret_word.length).split("").join(" "), already_guessed_letters = Array.new
+    )
+    @guess_counter = guess_counter
+    @secret_word = secret_word
+    @guessed_word = guessed_word
+    @already_guessed_letters = already_guessed_letters
+    @secret_word = secret_word.gsub(/\s+/, "").split("").join(" ")
   end
 
   def select_secret_word array_of_words
@@ -19,7 +23,16 @@ class Hangman
   end
 
   def play
+
+    "Do you want to start a new game or play a saved game?(new/save)"
+    
+
     loop do
+
+      # puts "Do you want to save the game and leave?"
+      # anwser = gets.chomp
+      # if()
+
       puts "You have #{@guess_counter} guesses left"
       puts @guessed_word
 
@@ -42,6 +55,12 @@ class Hangman
         break
       end
     end
+  end
+
+  def to_json
+    JSON.dump ({
+
+    })
   end
 
   def update_hangman letter
