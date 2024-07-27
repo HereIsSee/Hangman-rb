@@ -4,8 +4,9 @@ class Hangman
   def initialize
     @guess_counter = 20
     @secret_word = select_secret_word( read_from_file("words.txt") )
-    @guessed_word = "_" * @secret_word.length
+    @guessed_word = ("_" * @secret_word.length).split("").join(" ")
     @already_guessed_letters = Array.new
+    @secret_word = @secret_word.split("").join(" ")
   end
 
   def select_secret_word array_of_words
@@ -25,6 +26,7 @@ class Hangman
       update_hangman(guess_letter)
       @guess_counter-= 1
 
+      p @secret_word
       puts @guessed_word
 
       if win?
@@ -44,7 +46,7 @@ class Hangman
 
   def update_hangman letter
     @secret_word.chars.each_with_index do |element, index|
-      @guessed_word[index] = element if element == letter
+      @guessed_word[index] = element if element == letter && element != ' '
     end
   end
 
