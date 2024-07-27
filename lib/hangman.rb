@@ -24,14 +24,20 @@ class Hangman
 
   def play
 
-    "Do you want to start a new game or play a saved game?(new/save)"
-    
+    puts "Do you want to start a new game or play a saved game?(new/save)"
+    input = gets.chomp
+    if input == 'save'
+      puts "Loading saved game"
+      load()
+    end
 
     loop do
-
-      # puts "Do you want to save the game and leave?"
-      # anwser = gets.chomp
-      # if()
+      puts "Do you want to save the game and leave?(yes/no)"
+      anwser = gets.chomp
+      if anwser == "yes" || anwser == "y"
+        save()
+        return
+      end
 
       puts "You have #{@guess_counter} guesses left"
       puts @guessed_word
@@ -57,10 +63,31 @@ class Hangman
     end
   end
 
+  def load
+    return puts "No data saved previously!" if !File.exist?("save") ||  File.zero?("save")
+    file_content = File.read("save")
+    from_json(file_content)
+  end
+
+  def save
+    File.write("save", to_json)
+  end
+
   def to_json
     JSON.dump ({
-
+      :guess_counter => @guess_counter,
+      :secret_word => @secret_word,
+      :guessed_word => @guessed_word,
+      :already_guessed_letters => @already_guessed_letters
     })
+  end
+
+  def from_json(string)
+    data = JSON.load string
+    @guess_counter = data['guess_counter']
+    @secret_word = data['secret_word']
+    @guessed_word = data['guessed_word']
+    @already_guessed_letters = data['already_guessed_letters']
   end
 
   def update_hangman letter
@@ -103,10 +130,3 @@ def read_from_file string
 end
 
 var = Hangman.new().play
-
-
-# puts "Do you want to play 'Hangman' again?(yes/no)"
-#       anwser = gets.chomp
-#       if anwser == 'no' || anwser == 'n'
-#         break
-#       end
