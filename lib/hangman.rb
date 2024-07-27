@@ -2,9 +2,9 @@
 class Hangman
 
   def initialize
-    @guess_counter = 10
+    @guess_counter = 20
     @secret_word = select_secret_word( read_from_file("words.txt") )
-    @guesed_word = "_" * @secret_word.length
+    @guessed_word = "_" * @secret_word.length
     @already_guessed_letters = Array.new
   end
 
@@ -17,8 +17,46 @@ class Hangman
     end
   end
 
+  def play
+    loop do
+      puts "You have #{@guess_counter} guesses left"
+      puts @guessed_word
+
+      update_hangman(guess_letter)
+      @guess_counter-= 1
+
+      puts @guessed_word
+
+      if win?
+        puts "You win!"
+        puts @guessed_word
+        break
+      end
+
+      if lose?
+        puts "You ran out of guesses! You lose!"
+        puts @guessed_word
+        puts @secret_word
+        break
+      end
+    end
+  end
+
+  def update_hangman letter
+    @secret_word.chars.each_with_index do |element, index|
+      @guessed_word[index] = element if element == letter
+    end
+  end
+
+  def win?
+    @guessed_word == @secret_word
+  end
+
+  def lose?
+    @guess_counter <= 0
+  end
+
   def guess_letter
-    puts "You have #{@guess_counter} guesses left"
     puts "Guess letter:"
     
     loop do
@@ -43,7 +81,11 @@ def read_from_file string
   File.read(string).split(" ")
 end
 
-var = Hangman.new()
+var = Hangman.new().play
 
-var.guess_letter
-var.guess_letter
+
+# puts "Do you want to play 'Hangman' again?(yes/no)"
+#       anwser = gets.chomp
+#       if anwser == 'no' || anwser == 'n'
+#         break
+#       end
